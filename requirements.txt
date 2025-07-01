@@ -2,7 +2,9 @@ torch
 torchvision
 antialiased_cnns
 lpips
-face_recognition
+deepface
+retina-face
+tf-keras
 ffmpy
 av
 gradio

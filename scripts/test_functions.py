@@ -1,4 +1,4 @@
-import face_recognition
+from deepface import DeepFace
 import numpy as np
 import os
 import torch
@@ -74,7 +74,22 @@ def process_image(your_model, image, video, source_age, target_age=0,
         new_height = height if height % 2 == 0 else height - 1
         image.resize((new_width, new_height, depth))
 
-    fl = face_recognition.face_locations(image)[0]
+    face = DeepFace.extract_faces(
+        img_path=image,
+        detector_backend='retinaface',
+        enforce_detection=True,
+        align=False
+    )
+
+    fl = face[0]["facial_area"]
+
+    x, y, w, h = fl["x"], fl["y"], fl["w"], fl["h"]
+    top = y
+    right = x + w
+    bottom = y + h
+    left = x
+
+    fl = [top, right, bottom, left]
 
     # calculate margins
     margin_y_t = int((fl[2] - fl[0]) * .63 * .85)  # larger as the forehead is often cut off
