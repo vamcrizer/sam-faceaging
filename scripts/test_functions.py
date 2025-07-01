@@ -66,6 +66,8 @@ def process_image(your_model, image, video, source_age, target_age=0,
         target_age = 0
     input_size = (1024, 1024)
 
+    
+
     # image = face_recognition.load_image_file(filename)
     image = np.array(image)
     if video:  # h264 codec requires frame size to be divisible by 2.
@@ -73,6 +75,17 @@ def process_image(your_model, image, video, source_age, target_age=0,
         new_width = width if width % 2 == 0 else width - 1
         new_height = height if height % 2 == 0 else height - 1
         image.resize((new_width, new_height, depth))
+
+    objs = DeepFace.analyze(
+        img_path = image, actions = ['age']
+    )
+
+    source_age = int(objs[0]['age'])
+    
+    if source_age < 10:
+        source_age = 10
+    elif source_age > 90:
+        source_age = 90
 
     face = DeepFace.extract_faces(
         img_path=image,
